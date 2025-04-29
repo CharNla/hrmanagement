@@ -1,10 +1,9 @@
 import { useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import SideMenu from '../SideMenu/Side_menu'
 import './Popup.css'
 import partyPopper from '../../assets/party-popper.png'
 
-const PopupUpdatePass = ({ isOpen, onClose, sideMenuProps }) => {
+const PopupUpdatePass = ({ isOpen, onClose }) => {
   const navigate = useNavigate()
   const [isClosing, setIsClosing] = useState(false)
 
@@ -28,7 +27,6 @@ const PopupUpdatePass = ({ isOpen, onClose, sideMenuProps }) => {
     <>
       {isOpen && (
         <div className={`popup-overlay ${isClosing ? 'closing' : ''}`}>
-          <SideMenu {...sideMenuProps} hasPopup={true} />
           <div className={`popup-content ${isClosing ? 'closing' : ''}`}>
             <img 
               src={partyPopper} 

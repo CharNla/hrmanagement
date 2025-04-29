@@ -232,6 +232,15 @@
   font-size: 0.85rem;
 }
 
+/* Add styles for logout button */
+.dropdown-menu button:last-child {
+  color: #dc3545;
+}
+
+.dropdown-menu button:last-child svg {
+  color: #dc3545;
+}
+
 .dropdown-menu button:hover {
   background: var(--bg-secondary);
 }

@@ -6,7 +6,7 @@ import './OTP.css'
 
 function OTP() {
   const [otp, setOtp] = useState(['', '', '', '', ''])
-  const email = "robertallen@example.com"
+  const email = "admin@example.com"
   const navigate = useNavigate()
   const backspacePressed = useRef(false)
 
@@ -59,6 +59,18 @@ function OTP() {
   return (
     <div className="login-container">
       <div className="login-left">
+        <ul className="circles">
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
         <img src={bgDashboard} alt="Dashboard Preview" className="dashboard-preview" />
       </div>
       <div className="login-right">

@@ -296,7 +296,8 @@ function NewEmployees() {
         // Personal Information
         firstName: formData.firstName,
         lastName: formData.lastName,
-        fullName: `${formData.firstName} ${formData.lastName}`,
+        nickname: formData.nickname,
+        age: parseInt(formData.age),
         email: formData.email,
         phone: formData.phone,
         dob: formData.dob,
@@ -310,22 +311,12 @@ function NewEmployees() {
         profileImage: formData.profileImage,
 
         // Professional Information
-        employeeId: Math.random().toString(36).substr(2, 9),
         department: formData.department,
         position: formData.position,
         type: formData.type,
         status: formData.status,
         startDate: formData.startDate,
-        salary: formData.salary,
-        workHistory: formData.workHistory,
-
-        // Documents
-        jobApplication: formData.jobApplication,
-        employmentContract: formData.employmentContract,
-        certificate: formData.certificate,
-        nationalId: formData.nationalId,
-        householdRegistration: formData.householdRegistration,
-        bankBook: formData.bankBook,
+        salary: parseFloat(formData.salary),
 
         // Bank Information
         bankName: formData.bankName,
@@ -334,28 +325,21 @@ function NewEmployees() {
         accountType: formData.accountType,
         bankCode: formData.bankCode,
         bankStatus: formData.bankStatus,
-        lastUpdated: formatDateTime(),
 
         // Account Access
         slackId: formData.slackId,
         skypeId: formData.skypeId,
-        githubId: formData.githubId,
-
-        // Meta Information
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        githubId: formData.githubId
       };
 
       // Save to database
-      await createEmployee(employeeData);
+      const response = await axios.post('http://localhost:3001/api/employees', employeeData);
       
-      // Show success message
-      alert('Employee added successfully!');
-      
-      // Close popup and redirect
-      setShowConfirmation(false);
-      navigate('/employees');
-      
+      if (response.data.employeeId) {
+        // Redirect without showing alert
+        setShowConfirmation(false);
+        navigate('/employees');
+      }
     } catch (error) {
       console.error('Error submitting form:', error);
       alert('Failed to add employee. Please try again.');
@@ -491,11 +475,14 @@ function NewEmployees() {
               </div>
               <div className="form-group">
                 <label>Nationality</label>
-                <select name="nationality" value={formData.nationality} onChange={handleChange}>
-                  <option value="">Select nationality</option>
-                  <option value="thai">Thai</option>
-                  <option value="other">Other</option>
-                </select>
+                <input
+                  type="text"
+                  name="nationality"
+                  placeholder="Enter nationality"
+                  value={formData.nationality}
+                  onChange={handleChange}
+                  required
+                />
                 {errors.nationality && <span className="error-text">{errors.nationality}</span>}
               </div>
             </div>
@@ -515,29 +502,38 @@ function NewEmployees() {
             <div className="form-grid three-columns">
               <div className="form-group">
                 <label>City</label>
-                <select name="city" value={formData.city} onChange={handleChange}>
-                  <option value="">Select city</option>
-                  <option value="bangkok">Bangkok</option>
-                  <option value="other">Other</option>
-                </select>
+                <input
+                  type="text"
+                  name="city"
+                  placeholder="Enter city"
+                  value={formData.city}
+                  onChange={handleChange}
+                  required
+                />
                 {errors.city && <span className="error-text">{errors.city}</span>}
               </div>
               <div className="form-group">
                 <label>State</label>
-                <select name="state" value={formData.state} onChange={handleChange}>
-                  <option value="">Select state</option>
-                  <option value="bangkok">Bangkok</option>
-                  <option value="other">Other</option>
-                </select>
+                <input
+                  type="text"
+                  name="state"
+                  placeholder="Enter state"
+                  value={formData.state}
+                  onChange={handleChange}
+                  required
+                />
                 {errors.state && <span className="error-text">{errors.state}</span>}
               </div>
               <div className="form-group">
                 <label>ZIP Code</label>
-                <select name="zipCode" value={formData.zipCode} onChange={handleChange}>
-                  <option value="">Select ZIP code</option>
-                  <option value="10900">10900</option>
-                  <option value="other">Other</option>
-                </select>
+                <input
+                  type="text"
+                  name="zipCode"
+                  placeholder="Enter ZIP code"
+                  value={formData.zipCode}
+                  onChange={handleChange}
+                  required
+                />
                 {errors.zipCode && <span className="error-text">{errors.zipCode}</span>}
               </div>
             </div>

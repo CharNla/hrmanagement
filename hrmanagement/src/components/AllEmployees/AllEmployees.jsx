@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { FiEye, FiEdit2, FiTrash2, FiSearch, FiPlus, FiFilter } from 'react-icons/fi'
+import axios from 'axios'
 import SideMenu from '../SideMenu/Side_menu'
 import Topbar from '../Topbar/Topbar'
 import FilterModal from '../FilterModal/FilterModal'
-import { getEmployees } from '../../database/employeeData'
 import './AllEmployees.css'
 
-function AllEmployees() {
+const AllEmployees = () => {
   const [employees, setEmployees] = useState([])
   const [filteredEmployees, setFilteredEmployees] = useState([])
   const [search, setSearch] = useState('')
@@ -23,16 +23,20 @@ function AllEmployees() {
   const [employeeToDelete, setEmployeeToDelete] = useState(null)
   const [selectedDepartments, setSelectedDepartments] = useState([])
   const [isMinimized, setIsMinimized] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(null)
+  
   const departments = ['Design', 'Development', 'Sales', 'HR', 'PM', 'BA']
   const navigate = useNavigate()
 
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-    return `${month}/${day}/${year}`;
-  };
+    if (!dateString) return '-'
+    const date = new Date(dateString)
+    const day = date.getDate().toString().padStart(2, '0')
+    const month = (date.getMonth() + 1).toString().padStart(2, '0')
+    const year = date.getFullYear()
+    return `${month}/${day}/${year}`
+  }
 
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('isLoggedIn')
@@ -41,49 +45,60 @@ function AllEmployees() {
       return
     }
 
-    const employeesData = getEmployees()
-    setEmployees(employeesData)
-    setFilteredEmployees(employeesData)
+    const fetchEmployees = async () => {
+      try {
+        setIsLoading(true)
+        setError(null)
+        const response = await axios.get('http://localhost:3001/api/employees')
+        setEmployees(response.data)
+        setFilteredEmployees(response.data)
+      } catch (error) {
+        console.error('Error fetching employees:', error)
+        setError('Failed to fetch employees. Please try again later.')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchEmployees()
   }, [navigate])
 
   useEffect(() => {
     const filtered = employees.filter(employee => {
-      // แปลงค่า search เป็นตัวพิมพ์เล็กและตัดช่องว่างที่ไม่จำเป็น
       const searchTerm = search.toLowerCase().trim();
       
-      // ถ้าไม่มีคำค้นหา แสดงทั้งหมด
       if (!searchTerm) return true;
 
-      // แปลงวันที่ให้อยู่ในรูปแบบที่ค้นหาได้
-      const startDate = new Date(employee.startDate).toLocaleDateString();
-
-      // สร้าง array ของค่าที่ต้องการค้นหา
       const searchableFields = [
-        employee.name, // ชื่อ
-        employee.nickname, // ชื่อเล่น
-        employee.email, // อีเมล
-        employee.department, // แผนก
-        employee.position, // ตำแหน่ง
-        employee.type, // ประเภทการทำงาน
-        employee.status, // สถานะ
-        startDate // วันที่เริ่มงาน
+        `${employee.FName} ${employee.LName}`,
+        employee.Nickname,
+        employee.MobileNumber,
+        employee.Email,
+        employee.Age?.toString(),
+        employee.Department,
+        employee.Position,
+        employee.Type,
+        employee.Status,
+        // Bank information
+        employee.BankName,
+        employee.AccountNumber,
+        employee.AccountType,
+        employee.AccountHolderName
       ].map(field => (field || '').toString().toLowerCase());
 
-      // ตรวจสอบว่ามีค่าใดค่าหนึ่งตรงกับคำค้นหาหรือไม่
       return searchableFields.some(field => field.includes(searchTerm));
     });
 
-    // กรองตาม department และ type ที่เลือก
     const departmentFiltered = filters.departments.length === 0 
       ? filtered 
-      : filtered.filter(emp => filters.departments.includes(emp.department));
+      : filtered.filter(emp => filters.departments.includes(emp.Department));
 
     const typeFiltered = !filters.type 
       ? departmentFiltered 
-      : departmentFiltered.filter(emp => emp.type === filters.type);
+      : departmentFiltered.filter(emp => emp.Type === filters.type);
 
     setFilteredEmployees(typeFiltered);
-    setCurrentPage(1); // รีเซ็ตหน้าเมื่อมีการค้นหาใหม่
+    setCurrentPage(1);
   }, [search, employees, filters])
 
   // Get current employees
@@ -101,13 +116,21 @@ function AllEmployees() {
     setDeleteModalOpen(true)
   }
 
-  const handleConfirmDelete = () => {
-    const updatedEmployees = employees.filter(
-      emp => emp.employeeId !== employeeToDelete.employeeId
-    )
-    setEmployees(updatedEmployees)
-    setDeleteModalOpen(false)
-    setEmployeeToDelete(null)
+  // Handle delete employee
+  const handleConfirmDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:3001/api/employees/${employeeToDelete.EmployeeId}`)
+      const updatedEmployees = employees.filter(
+        emp => emp.EmployeeId !== employeeToDelete.EmployeeId
+      )
+      setEmployees(updatedEmployees)
+      setFilteredEmployees(updatedEmployees)
+      setDeleteModalOpen(false)
+      setEmployeeToDelete(null)
+    } catch (error) {
+      console.error('Error deleting employee:', error)
+      alert('Failed to delete employee')
+    }
   }
 
   const handleCancelDelete = () => {
@@ -129,13 +152,13 @@ function AllEmployees() {
   }
 
   return (
-    <div className="dashboard-container">
-      <SideMenu isMinimized={isMinimized} onToggleMinimize={() => setIsMinimized(!isMinimized)} />
+    <div className={`dashboard-container ${deleteModalOpen || isFilterModalOpen ? 'has-popup' : ''}`}>
+      <SideMenu 
+        isMinimized={isMinimized} 
+        onToggleMinimize={() => setIsMinimized(!isMinimized)}
+      />
       <div className="dashboard-main">
-        <Topbar 
-          pageTitle="All Employees" 
-          pageSubtitle="All Employees Information" 
-        />
+        <Topbar pageTitle="All Employees" pageSubtitle="All Employees Information" />
         <motion.div 
           className="dashboard-content"
           initial={{ opacity: 0, y: 20 }}
@@ -154,229 +177,155 @@ function AllEmployees() {
             </div>
 
             <div className="action-buttons">
-              <button
-                className="add-employee-btn"
-                onClick={() => navigate('/new-employee')}
-              >
+              <button className="add-employee-btn" onClick={() => navigate('/new-employee')}>
                 <FiPlus className="btn-icon" />
                 <span>Add New Employee</span>
               </button>
-              <button
-                className="filter-btn"
-                onClick={() => setIsFilterModalOpen(true)}
-              >
+              <button className="filter-btn" onClick={() => setIsFilterModalOpen(true)}>
                 <FiFilter className="btn-icon" />
                 <span>Filter</span>
               </button>
             </div>
           </div>
 
-          <div className="employees-table">
-            <table>
-              <thead>
-                <tr>
-                  <th>Employee Name (Nickname)</th>
-                  <th>Email</th>
-                  <th>Department</th>
-                  <th>Position</th>
-                  <th>Start Date</th>
-                  <th>Type</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentEmployees.map((employee, index) => (
-                  <tr key={index}>
-                    <td className="employee-name">
-                      <img src={employee.imageUrl} alt={employee.name} />
-                      <div className="name-info">
-                        <span>{employee.name}</span>
-                        <span className="nickname">({employee.nickname})</span>
-                      </div>
-                    </td>
-                    <td>{employee.email}</td>
-                    <td>{employee.department}</td>
-                    <td>{employee.position}</td>
-                    <td>{formatDate(employee.startDate)}</td>
-                    <td>{employee.type}</td>
-                    <td>
-                      <span className={`status ${employee.status.toLowerCase()}`}>
-                        {employee.status}
-                      </span>
-                    </td>
-                    <td className="actions">
-                      <button 
-                        title="View" 
-                        onClick={() => navigate(`/employee/${employee.employeeId}`)}
-                      >
-                        <FiEye />
-                      </button>
-                      <button
-                        title="Edit"
-                        onClick={() => navigate(`/employee/${employee.employeeId}?edit=true`)}
-                      >
-                        <FiEdit2 />
-                      </button>
-                      <button 
-                        title="Delete" 
-                        onClick={() => handleDeleteClick(employee)}
-                        className="delete-btn"
-                      >
-                        <FiTrash2 />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="table-footer">
-            <div className="items-per-page">
-              <span>Showing</span>
-              <select 
-                value={itemsPerPage}
-                onChange={(e) => setItemsPerPage(Number(e.target.value))}
-              >
-                <option value={10}>10</option>
-                <option value={20}>20</option>
-                <option value={50}>50</option>
-              </select>
-              <span>out of {filteredEmployees.length} records</span>
+          {error && (
+            <div className="error-message">
+              {error}
             </div>
-            <div className="pagination">
-              <button 
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-              >
-                &lt;
-              </button>
-              {[...Array(totalPages)].map((_, i) => (
-                <button
-                  key={i + 1}
-                  onClick={() => setCurrentPage(i + 1)}
-                  className={currentPage === i + 1 ? 'active' : ''}
-                >
-                  {i + 1}
-                </button>
-              ))}
-              <button 
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-              >
-                &gt;
-              </button>
-            </div>
-          </div>
+          )}
 
-          {isFilterModalOpen && (
-            <div className="filter-modal-overlay">
-              <div className="filter-modal">
-                <h2>Filter</h2>
+          {isLoading ? (
+            <div className="loading-spinner">Loading...</div>
+          ) : (
+            <>
+              <div className="employees-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Employee Name (Nickname)</th>
+                      <th>Email</th>
+                      <th>Department</th>
+                      <th>Position</th>
+                      <th>Start Date</th>
+                      <th>Type</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentEmployees.length === 0 ? (
+                      <tr>
+                        <td colSpan="8" className="no-data">
+                          No employees found
+                        </td>
+                      </tr>
+                    ) : (
+                      currentEmployees.map((employee, index) => (
+                        <tr key={employee.EmployeeId || index}>
+                          <td className="employee-name">
+                            <img 
+                              src={employee.ImageUrl || '/src/assets/profile.png'} 
+                              alt={employee.Name} 
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = '/src/assets/profile.png';
+                              }}
+                            />
+                            <div className="name-info">
+                              <span>{`${employee.FName} ${employee.LName}`}</span>
+                              <span className="nickname">({employee.Nickname || '-'})</span>
+                            </div>
+                          </td>
+                          <td>{employee.Email}</td>
+                          <td>{employee.Department}</td>
+                          <td>{employee.Position}</td>
+                          <td>{formatDate(employee.StartDate)}</td>
+                          <td>{employee.Type}</td>
+                          <td>
+                            <span className={`status ${(employee.Status || '').toLowerCase()}`}>
+                              {employee.Status}
+                            </span>
+                          </td>
+                          <td className="actions">
+                            <button title="View" onClick={() => navigate(`/employee/${employee.EmployeeId}`)}>
+                              <FiEye />
+                            </button>
+                            <button title="Edit" onClick={() => navigate(`/employee/${employee.EmployeeId}?edit=true`)}>
+                              <FiEdit2 />
+                            </button>
+                            <button title="Delete" onClick={() => handleDeleteClick(employee)} className="delete-btn">
+                              <FiTrash2 />
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
 
-                <div className="checkbox-group">
-                  {departments.map((dep) => (
-                    <label key={dep}>
-                      <input
-                        type="checkbox"
-                        checked={selectedDepartments.includes(dep)}
-                        onChange={() => toggleDepartment(dep)}
-                      />
-                      {dep}
-                    </label>
+              <div className="table-footer">
+                <div className="items-per-page">
+                  <span>Showing</span>
+                  <select 
+                    value={itemsPerPage}
+                    onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                  >
+                    <option value={10}>10</option>
+                    <option value={20}>20</option>
+                    <option value={50}>50</option>
+                    /* Add more options as needed */
+                  </select>
+                  <span>out of {filteredEmployees.length} records</span>
+                </div>
+                <div className="pagination">
+                  <button 
+                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1}
+                  >
+                    &lt;
+                  </button>
+                  {[...Array(totalPages)].map((_, i) => (
+                    <button
+                      key={i + 1}
+                      onClick={() => setCurrentPage(i + 1)}
+                      className={currentPage === i + 1 ? 'active' : ''}
+                    >
+                      {i + 1}
+                    </button>
                   ))}
-                </div>
-
-                <h4>Select Type</h4>
-                <div className="checkbox-group">
-                  <label>
-                    <input 
-                      type="radio" 
-                      name="type" 
-                      value="Office"
-                      checked={filters.type === 'Office'}
-                      onChange={e => setFilters({...filters, type: e.target.value})}
-                    /> 
-                    Office
-                  </label>
-                  <label>
-                    <input 
-                      type="radio" 
-                      name="type" 
-                      value="Remote"
-                      checked={filters.type === 'Remote'}
-                      onChange={e => setFilters({...filters, type: e.target.value})}
-                    /> 
-                    Work from Home
-                  </label>
-                </div>
-
-                <div className="modal-buttons">
                   <button 
-                    className="reset-btn" 
-                    onClick={handleReset}
+                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                    disabled={currentPage === totalPages}
                   >
-                    Reset
-                  </button>
-                  <button 
-                    className="cancel-btn" 
-                    onClick={() => setIsFilterModalOpen(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button 
-                    className="apply-btn" 
-                    onClick={() => {
-                      handleApplyFilters({ departments: selectedDepartments, type: filters.type })
-                      setIsFilterModalOpen(false)
-                    }}
-                  >
-                    Apply
+                    &gt;
                   </button>
                 </div>
               </div>
-            </div>
+            </>
+          )}
+
+          {isFilterModalOpen && (
+            <FilterModal 
+              isOpen={isFilterModalOpen}
+              onClose={() => setIsFilterModalOpen(false)}
+              onApply={handleApplyFilters}
+            />
           )}
 
           {deleteModalOpen && (
             <div className="modal-overlay">
-              <SideMenu 
-                isMinimized={isMinimized} 
-                onToggleMinimize={() => setIsMinimized(!isMinimized)} 
-                hasPopup={true} 
-              />
               <div className="delete-modal">
                 <h3>Confirm Delete</h3>
-                <p>Are you sure you want to delete employee "{employeeToDelete?.name}"?</p>
+                <p>Are you sure you want to delete employee "{employeeToDelete ? `${employeeToDelete.FName} ${employeeToDelete.LName}` : ''}"?</p>
                 <p>This action cannot be undone.</p>
                 <div className="modal-actions">
-                  <button 
-                    className="cancel-btn" 
-                    onClick={handleCancelDelete}
-                  >
-                    Cancel
-                  </button>
-                  <button 
-                    className="delete-btn" 
-                    onClick={handleConfirmDelete}
-                  >
-                    Delete
-                  </button>
+                  <button className="cancel-btn" onClick={handleCancelDelete}>Cancel</button>
+                  <button className="delete-btn" onClick={handleConfirmDelete}>Delete</button>
                 </div>
               </div>
             </div>
           )}
-
-          <FilterModal 
-            isOpen={isFilterModalOpen}
-            onClose={() => setIsFilterModalOpen(false)}
-            onApply={handleApplyFilters}
-            sideMenuProps={{
-              isMinimized,
-              onToggleMinimize: () => setIsMinimized(!isMinimized)
-            }}
-          />
         </motion.div>
       </div>
     </div>

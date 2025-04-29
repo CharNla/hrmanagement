@@ -16,6 +16,18 @@ function ForgotPassword() {
   return (
     <div className="login-container">
       <div className="login-left">
+        <ul className="circles">
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
         <img src={bgDashboard} alt="Dashboard Preview" className="dashboard-preview" />
       </div>
       <div className="login-right">

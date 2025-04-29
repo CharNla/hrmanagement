@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import SideMenu from '../SideMenu/Side_menu';
 import Topbar from '../Topbar/Topbar';
-import { FiEdit2, FiUser, FiBriefcase, FiFileText, FiLock, FiUserCheck, FiCalendar, FiFolder, FiFile, FiCreditCard } from 'react-icons/fi';
+import { FiEdit2, FiUser, FiBriefcase, FiFileText, FiLock, FiUserCheck, FiCalendar, FiFolder, FiFile, FiCreditCard, FiEye, FiDownload } from 'react-icons/fi';
 import { getEmployees } from '../../database/employeeData';
-import attendanceDataRaw from '../../database/attendance.sql?raw';
-import projectDataRaw from '../../database/project.sql?raw';
-import leaveDataRaw from '../../database/laeve.sql?raw';
+import axios from 'axios';
 import './ProfileDetail.css';
 
 const mainTabs = [
@@ -38,18 +36,44 @@ const ProfileDetail = () => {
   const [leaveData, setLeaveData] = useState([]);
 
   useEffect(() => {
-    const fetchEmployeeData = () => {
-      const employeesData = getEmployees();
-      const employee = employeesData.find(emp => emp.employeeId === id);
-      
-      if (employee) {
-        setEmployeeData(employee);
-      } else {
-        console.error('Employee not found with ID:', id);
+    const fetchEmployeeData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3001/api/employees/${id}`);
+        if (response.data) {
+          setEmployeeData(response.data);
+        } else {
+          console.error('Employee not found with ID:', id);
+        }
+      } catch (error) {
+        console.error('Error fetching employee:', error);
+      }
+    };
+
+    const fetchProjectData = async () => {
+      try {
+        console.log('Fetching projects for employee ID:', id);
+        const response = await axios.get(`http://localhost:3001/api/projects/${id}`);
+        console.log('Project data received:', response.data);
+        setProjectData(response.data || []);
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+        setProjectData([]);
+      }
+    };
+
+    const fetchLeaveData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3001/api/leave/${id}`);
+        setLeaveData(response.data || []);
+      } catch (error) {
+        console.error('Error fetching leave data:', error);
+        setLeaveData([]);
       }
     };
 
     fetchEmployeeData();
+    fetchProjectData();
+    fetchLeaveData();
   }, [id]);
 
   useEffect(() => {
@@ -64,46 +88,18 @@ const ProfileDetail = () => {
   }, [location.search]);
 
   useEffect(() => {
-    setAttendanceData(
-      parseAttendance().filter(row => row.employeeId === employeeData?.employeeId)
-    );
-  }, [employeeData]);
-
-  useEffect(() => {
-    setProjectData(
-      parseProjects().filter(row => row.employeeId === employeeData?.employeeId)
-    );
-  }, [employeeData]);
-
-  useEffect(() => {
-    setLeaveData(
-      parseLeave().filter(row => row.employeeId === employeeData?.employeeId)
-    );
-  }, [employeeData]);
-
-  const parseAttendance = () => {
-    try {
-      return JSON.parse(attendanceDataRaw);
-    } catch {
-      return eval(attendanceDataRaw);
+    if (id) {
+      axios.get(`http://localhost:3001/api/attendance/${id}`)
+        .then(res => {
+          console.log('Attendance data:', res.data);
+          setAttendanceData(res.data);
+        })
+        .catch(error => {
+          console.error('Error fetching attendance:', error);
+          setAttendanceData([]);
+        });
     }
-  };
-
-  const parseProjects = () => {
-    try {
-      return JSON.parse(projectDataRaw);
-    } catch {
-      return eval(projectDataRaw);
-    }
-  };
-
-  const parseLeave = () => {
-    try {
-      return JSON.parse(leaveDataRaw);
-    } catch {
-      return eval(leaveDataRaw);
-    }
-  };
+  }, [id]);
 
   const handleEditClick = () => setIsEditing(true);
 
@@ -117,197 +113,218 @@ const ProfileDetail = () => {
     setEditData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    // TODO: save to backend/service if needed
-    setEmployeeData(editData);
-    setIsEditing(false);
+  const handleSave = async () => {
+    try {
+      const response = await axios.put(`http://localhost:3001/api/employees/${id}`, editData);
+      if (response.data) {
+        setEmployeeData(editData);
+        setIsEditing(false);
+      }
+    } catch (error) {
+      console.error('Error updating employee:', error);
+      alert('Failed to update employee. Please try again.');
+    }
   };
 
   // Personal Information
-  const renderPersonalInfo = () => (
-    <div className="info-container">
-      <div className="info-row">
-        <div className="info-item">
-          <label>First Name</label>
-          {isEditing ? (
-            <input
-              type="text"
-              name="firstName"
-              value={editData.firstName || editData.name?.split(' ')[0] || ''}
-              onChange={handleInputChange}
-              className="edit-input"
-            />
-          ) : (
-            <p>{employeeData.firstName || employeeData.name?.split(' ')[0] || '-'}</p>
-          )}
+  const renderPersonalInformation = () => {
+    return (
+      <div className="info-section personal-info-section">
+        <div className="info-row">
+          <div className="info-item">
+            <label>First Name</label>
+            {isEditing ? (
+              <input
+                type="text"
+                name="FName"
+                value={editData.FName || ''}
+                onChange={handleInputChange}
+                className="edit-input"
+              />
+            ) : (
+              <span className="info-value">{employeeData?.FName || '-'}</span>
+            )}
+          </div>
+          <div className="info-item">
+            <label>Last Name</label>
+            {isEditing ? (
+              <input
+                type="text"
+                name="LName"
+                value={editData.LName || ''}
+                onChange={handleInputChange}
+                className="edit-input"
+              />
+            ) : (
+              <span className="info-value">{employeeData?.LName || '-'}</span>
+            )}
+          </div>
         </div>
-        <div className="info-item">
-          <label>Last Name</label>
-          {isEditing ? (
-            <input
-              type="text"
-              name="lastName"
-              value={editData.lastName || editData.name?.split(' ').slice(1).join(' ') || ''}
-              onChange={handleInputChange}
-              className="edit-input"
-            />
-          ) : (
-            <p>{employeeData.lastName || employeeData.name?.split(' ').slice(1).join(' ') || '-'}</p>
-          )}
+        <div className="info-row">
+          <div className="info-item">
+            <label>Mobile Number</label>
+            {isEditing ? (
+              <input
+                type="tel"
+                name="MobileNumber"
+                value={editData.MobileNumber || ''}
+                onChange={handleInputChange}
+                className="edit-input"
+              />
+            ) : (
+              <span className="info-value">{employeeData?.MobileNumber || '-'}</span>
+            )}
+          </div>
+          <div className="info-item">
+            <label>Age</label>
+            {isEditing ? (
+              <input
+                type="number"
+                name="Age"
+                value={editData.Age || ''}
+                onChange={handleInputChange}
+                className="edit-input"
+              />
+            ) : (
+              <span className="info-value">{employeeData?.Age || '-'}</span>
+            )}
+          </div>
+        </div>
+        <div className="info-row">
+          <div className="info-item">
+            <label>Date of Birth</label>
+            {isEditing ? (
+              <input
+                type="date"
+                name="DateOfBirth"
+                value={editData.DateOfBirth || ''}
+                onChange={handleInputChange}
+                className="edit-input"
+              />
+            ) : (
+              <span className="info-value">
+                {employeeData?.DateOfBirth
+                  ? (new Date(employeeData.DateOfBirth).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }))
+                  : '-'}
+              </span>
+            )}
+          </div>
+          <div className="info-item">
+            <label>Marital Status</label>
+            {isEditing ? (
+              <select
+                name="MaritalStatus"
+                value={editData.MaritalStatus || ''}
+                onChange={handleInputChange}
+                className="edit-input"
+              >
+                <option value="">Select Status</option>
+                <option value="Single">Single</option>
+                <option value="Married">Married</option>
+                <option value="Divorced">Divorced</option>
+              </select>
+            ) : (
+              <span className="info-value">{employeeData?.MaritalStatus || '-'}</span>
+            )}
+          </div>
+        </div>
+        <div className="info-row">
+          <div className="info-item">
+            <label>Gender</label>
+            {isEditing ? (
+              <select
+                name="Gender"
+                value={editData.Gender || ''}
+                onChange={handleInputChange}
+                className="edit-input"
+              >
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            ) : (
+              <span className="info-value">{employeeData?.Gender || '-'}</span>
+            )}
+          </div>
+          <div className="info-item">
+            <label>Nationality</label>
+            {isEditing ? (
+              <input
+                type="text"
+                name="Nationality"
+                value={editData.Nationality || ''}
+                onChange={handleInputChange}
+                className="edit-input"
+              />
+            ) : (
+              <span className="info-value">{employeeData?.Nationality || '-'}</span>
+            )}
+          </div>
+        </div>
+        <div className="info-row">
+          <div className="info-item">
+            <label>Address</label>
+            {isEditing ? (
+              <input
+                type="text"
+                name="Address"
+                value={editData.Address || ''}
+                onChange={handleInputChange}
+                className="edit-input"
+              />
+            ) : (
+              <span className="info-value">{employeeData?.Address || '-'}</span>
+            )}
+          </div>
+          <div className="info-item">
+            <label>City</label>
+            {isEditing ? (
+              <input
+                type="text"
+                name="City"
+                value={editData.City || ''}
+                onChange={handleInputChange}
+                className="edit-input"
+              />
+            ) : (
+              <span className="info-value">{employeeData?.City || '-'}</span>
+            )}
+          </div>
+        </div>
+        <div className="info-row">
+          <div className="info-item">
+            <label>State</label>
+            {isEditing ? (
+              <input
+                type="text"
+                name="State"
+                value={editData.State || ''}
+                onChange={handleInputChange}
+                className="edit-input"
+              />
+            ) : (
+              <span className="info-value">{employeeData?.State || '-'}</span>
+            )}
+          </div>
+          <div className="info-item">
+            <label>Zip Code</label>
+            {isEditing ? (
+              <input
+                type="text"
+                name="ZIPCode"
+                value={editData.ZIPCode || ''}
+                onChange={handleInputChange}
+                className="edit-input"
+              />
+            ) : (
+              <span className="info-value">{employeeData?.ZIPCode || '-'}</span>
+            )}
+          </div>
         </div>
       </div>
-      <div className="info-row">
-        <div className="info-item">
-          <label>Mobile Number</label>
-          {isEditing ? (
-            <input
-              type="text"
-              name="phone"
-              value={editData.phone || ''}
-              onChange={handleInputChange}
-              className="edit-input"
-            />
-          ) : (
-            <p>{employeeData.phone || '-'}</p>
-          )}
-        </div>
-        <div className="info-item">
-          <label>Email Address</label>
-          {isEditing ? (
-            <input
-              type="email"
-              name="email"
-              value={editData.email || ''}
-              onChange={handleInputChange}
-              className="edit-input"
-            />
-          ) : (
-            <p>{employeeData.email || '-'}</p>
-          )}
-        </div>
-      </div>
-      <div className="info-row">
-        <div className="info-item">
-          <label>Date of Birth</label>
-          {isEditing ? (
-            <input
-              type="date"
-              name="dob"
-              value={editData.dob || ''}
-              onChange={handleInputChange}
-              className="edit-input"
-            />
-          ) : (
-            <p>{employeeData.dob || '-'}</p>
-          )}
-        </div>
-        <div className="info-item">
-          <label>Marital Status</label>
-          {isEditing ? (
-            <input
-              type="text"
-              name="maritalStatus"
-              value={editData.maritalStatus || ''}
-              onChange={handleInputChange}
-              className="edit-input"
-            />
-          ) : (
-            <p>{employeeData.maritalStatus || '-'}</p>
-          )}
-        </div>
-      </div>
-      <div className="info-row">
-        <div className="info-item">
-          <label>Gender</label>
-          {isEditing ? (
-            <input
-              type="text"
-              name="gender"
-              value={editData.gender || ''}
-              onChange={handleInputChange}
-              className="edit-input"
-            />
-          ) : (
-            <p>{employeeData.gender || '-'}</p>
-          )}
-        </div>
-        <div className="info-item">
-          <label>Nationality</label>
-          {isEditing ? (
-            <input
-              type="text"
-              name="nationality"
-              value={editData.nationality || ''}
-              onChange={handleInputChange}
-              className="edit-input"
-            />
-          ) : (
-            <p>{employeeData.nationality || '-'}</p>
-          )}
-        </div>
-      </div>
-      <div className="info-row">
-        <div className="info-item">
-          <label>Address</label>
-          {isEditing ? (
-            <input
-              type="text"
-              name="address"
-              value={editData.address || ''}
-              onChange={handleInputChange}
-              className="edit-input"
-            />
-          ) : (
-            <p>{employeeData.address || '-'}</p>
-          )}
-        </div>
-        <div className="info-item">
-          <label>City</label>
-          {isEditing ? (
-            <input
-              type="text"
-              name="city"
-              value={editData.city || ''}
-              onChange={handleInputChange}
-              className="edit-input"
-            />
-          ) : (
-            <p>{employeeData.city || '-'}</p>
-          )}
-        </div>
-      </div>
-      <div className="info-row">
-        <div className="info-item">
-          <label>State</label>
-          {isEditing ? (
-            <input
-              type="text"
-              name="state"
-              value={editData.state || ''}
-              onChange={handleInputChange}
-              className="edit-input"
-            />
-          ) : (
-            <p>{employeeData.state || '-'}</p>
-          )}
-        </div>
-        <div className="info-item">
-          <label>ZIP Code</label>
-          {isEditing ? (
-            <input
-              type="text"
-              name="zipCode"
-              value={editData.zipCode || ''}
-              onChange={handleInputChange}
-              className="edit-input"
-            />
-          ) : (
-            <p>{employeeData.zipCode || '-'}</p>
-          )}
-        </div>
-      </div>
-    </div>
-  );
+    );
+  };
 
   // Professional Information
   const renderProfessionalInfo = () => (
@@ -318,88 +335,88 @@ const ProfileDetail = () => {
           {isEditing ? (
             <input
               type="text"
-              name="employeeId"
-              value={editData.employeeId || ''}
+              name="EmployeeId"
+              value={editData.EmployeeId || ''}
               onChange={handleInputChange}
               className="edit-input"
-              disabled // ไม่ควรให้แก้ไข Employee ID
+              disabled
             />
           ) : (
-            <p>{employeeData.employeeId || '-'}</p>
+            <p>{employeeData.EmployeeId || '-'}</p>
           )}
         </div>
-        <div className="info-item">
-          <label>User Name</label>
-          {isEditing ? (
-            <input
-              type="text"
-              name="userName"
-              value={editData.userName || ''}
-              onChange={handleInputChange}
-              className="edit-input"
-            />
-          ) : (
-            <p>{employeeData.userName || '-'}</p>
-          )}
-        </div>
-      </div>
-      <div className="info-row">
         <div className="info-item">
           <label>Department</label>
           {isEditing ? (
             <input
               type="text"
-              name="department"
-              value={editData.department || ''}
+              name="Department"
+              value={editData.Department || ''}
               onChange={handleInputChange}
               className="edit-input"
             />
           ) : (
-            <p>{employeeData.department || '-'}</p>
-          )}
-        </div>
-        <div className="info-item">
-          <label>Position</label>
-          {isEditing ? (
-            <input
-              type="text"
-              name="position"
-              value={editData.position || ''}
-              onChange={handleInputChange}
-              className="edit-input"
-            />
-          ) : (
-            <p>{employeeData.position || '-'}</p>
+            <p>{employeeData.Department || '-'}</p>
           )}
         </div>
       </div>
       <div className="info-row">
         <div className="info-item">
-          <label>Employee Status</label>
+          <label>Position</label>
           {isEditing ? (
             <input
               type="text"
-              name="status"
-              value={editData.status || ''}
+              name="Position"
+              value={editData.Position || ''}
               onChange={handleInputChange}
               className="edit-input"
             />
           ) : (
-            <p>{employeeData.status || '-'}</p>
+            <p>{employeeData.Position || '-'}</p>
           )}
         </div>
+        <div className="info-item">
+          <label>Employee Status</label>
+          {isEditing ? (
+            <input
+              type="text"
+              name="Status" 
+              value={editData.Status || ''}
+              onChange={handleInputChange}
+              className="edit-input"
+            />
+          ) : (
+            <p>{employeeData.Status || '-'}</p>
+          )}
+        </div>
+      </div>
+      <div className="info-row">
         <div className="info-item">
           <label>Type</label>
           {isEditing ? (
             <input
               type="text"
-              name="type"
-              value={editData.type || ''}
+              name="Type"
+              value={editData.Type || ''}
               onChange={handleInputChange}
               className="edit-input"
             />
           ) : (
-            <p>{employeeData.type || '-'}</p>
+            <p>{employeeData.Type || '-'}</p>
+          )}
+        </div>
+        <div className="info-item">
+          <label>Salary</label>
+          {isEditing ? (
+            <input
+              type="number"
+              name="Salary"
+              value={editData.Salary || ''}
+              onChange={handleInputChange}
+              className="edit-input"
+            />
+          ) : (
+            <p>{employeeData.Salary ? `฿${employeeData.Salary.toLocaleString()}` : '-'}</p>
           )}
         </div>
       </div>
@@ -410,19 +427,271 @@ const ProfileDetail = () => {
     <div className="documents-container">
       <div className="document-row">
         <div className="document-item">
-          <span>Resume.pdf</span>
+          <span>Job application form.pdf</span>
           <div className="document-actions">
-            <button className="view-btn">View</button>
-            <button className="download-btn">Download</button>
+            <button className="button-view">
+              <svg
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                viewBox="0 0 24 24"
+                height="24"
+                width="24"
+                className="button-view__icon"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <span>View</span>
+            </button>
+            <button className="button-download">
+              <svg
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                viewBox="0 0 24 24"
+                height="24"
+                width="24"
+                className="button-download__icon"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path fill="none" d="M0 0h24v24H0z" stroke="none"></path>
+                <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
+                <path d="M7 11l5 5l5 -5"></path>
+                <path d="M12 4l0 12"></path>
+              </svg>
+              <span>Download</span>
+            </button>
           </div>
         </div>
       </div>
       <div className="document-row">
         <div className="document-item">
-          <span>Certificate.jpg</span>
+          <span>Employment contract.jpg</span>
           <div className="document-actions">
-            <button className="view-btn">View</button>
-            <button className="download-btn">Download</button>
+            <button className="button-view">
+              <svg
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                viewBox="0 0 24 24"
+                height="24"
+                width="24"
+                className="button-view__icon"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <span>View</span>
+            </button>
+            <button className="button-download">
+              <svg
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                viewBox="0 0 24 24"
+                height="24"
+                width="24"
+                className="button-download__icon"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path fill="none" d="M0 0h24v24H0z" stroke="none"></path>
+                <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
+                <path d="M7 11l5 5l5 -5"></path>
+                <path d="M12 4l0 12"></path>
+              </svg>
+              <span>Download</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="document-row">
+        <div className="document-item">
+          <span>Certificate.pdf</span>
+          <div className="document-actions">
+            <button className="button-view">
+              <svg
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                viewBox="0 0 24 24"
+                height="24"
+                width="24"
+                className="button-view__icon"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <span>View</span>
+            </button>
+            <button className="button-download">
+              <svg
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                viewBox="0 0 24 24"
+                height="24"
+                width="24"
+                className="button-download__icon"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path fill="none" d="M0 0h24v24H0z" stroke="none"></path>
+                <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
+                <path d="M7 11l5 5l5 -5"></path>
+                <path d="M12 4l0 12"></path>
+              </svg>
+              <span>Download</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="document-row">
+        <div className="document-item">
+          <span>Copy of ID Card.pdf</span>
+          <div className="document-actions">
+            <button className="button-view">
+              <svg
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                viewBox="0 0 24 24"
+                height="24"
+                width="24"
+                className="button-view__icon"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <span>View</span>
+            </button>
+            <button className="button-download">
+              <svg
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                viewBox="0 0 24 24"
+                height="24"
+                width="24"
+                className="button-download__icon"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path fill="none" d="M0 0h24v24H0z" stroke="none"></path>
+                <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
+                <path d="M7 11l5 5l5 -5"></path>
+                <path d="M12 4l0 12"></path>
+              </svg>
+              <span>Download</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="document-row">
+        <div className="document-item">
+          <span>House Registration.png</span>
+          <div className="document-actions">
+            <button className="button-view">
+              <svg
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                viewBox="0 0 24 24"
+                height="24"
+                width="24"
+                className="button-view__icon"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <span>View</span>
+            </button>
+            <button className="button-download">
+              <svg
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                viewBox="0 0 24 24"
+                height="24"
+                width="24"
+                className="button-download__icon"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path fill="none" d="M0 0h24v24H0z" stroke="none"></path>
+                <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
+                <path d="M7 11l5 5l5 -5"></path>
+                <path d="M12 4l0 12"></path>
+              </svg>
+              <span>Download</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="document-row">
+        <div className="document-item">
+          <span>Bank Account Book.pdf</span>
+          <div className="document-actions">
+            <button className="button-view">
+              <svg
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                viewBox="0 0 24 24"
+                height="24"
+                width="24"
+                className="button-view__icon"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <span>View</span>
+            </button>
+            <button className="button-download">
+              <svg
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                viewBox="0 0 24 24"
+                height="24"
+                width="24"
+                className="button-download__icon"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path fill="none" d="M0 0h24v24H0z" stroke="none"></path>
+                <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
+                <path d="M7 11l5 5l5 -5"></path>
+                <path d="M12 4l0 12"></path>
+              </svg>
+              <span>Download</span>
+            </button>
           </div>
         </div>
       </div>
@@ -437,13 +706,13 @@ const ProfileDetail = () => {
           {isEditing ? (
             <input
               type="text"
-              name="bankName"
-              value={editData.bankName || ''}
+              name="BankName"
+              value={editData.BankName || ''}
               onChange={handleInputChange}
               className="edit-input"
             />
           ) : (
-            <p>{employeeData.bankName || '-'}</p>
+            <p>{employeeData.BankName || '-'}</p>
           )}
         </div>
         <div className="info-item">
@@ -451,13 +720,13 @@ const ProfileDetail = () => {
           {isEditing ? (
             <input
               type="text"
-              name="accountHolderName"
-              value={editData.accountHolderName || ''}
+              name="AccountHolderName"
+              value={editData.AccountHolderName || ''}
               onChange={handleInputChange}
               className="edit-input"
             />
           ) : (
-            <p>{employeeData.accountHolderName || '-'}</p>
+            <p>{employeeData.AccountHolderName || '-'}</p>
           )}
         </div>
       </div>
@@ -467,13 +736,13 @@ const ProfileDetail = () => {
           {isEditing ? (
             <input
               type="text"
-              name="accountNumber"
-              value={editData.accountNumber || ''}
+              name="AccountNumber"
+              value={editData.AccountNumber || ''}
               onChange={handleInputChange}
               className="edit-input"
             />
           ) : (
-            <p>{employeeData.accountNumber || '-'}</p>
+            <p>{employeeData.AccountNumber || '-'}</p>
           )}
         </div>
         <div className="info-item">
@@ -481,13 +750,13 @@ const ProfileDetail = () => {
           {isEditing ? (
             <input
               type="text"
-              name="accountType"
-              value={editData.accountType || ''}
+              name="AccountType"
+              value={editData.AccountType || ''}
               onChange={handleInputChange}
               className="edit-input"
             />
           ) : (
-            <p>{employeeData.accountType || '-'}</p>
+            <p>{employeeData.AccountType || '-'}</p>
           )}
         </div>
       </div>
@@ -497,13 +766,13 @@ const ProfileDetail = () => {
           {isEditing ? (
             <input
               type="text"
-              name="bankCode"
-              value={editData.bankCode || ''}
+              name="BankCode"
+              value={editData.BankCode || ''}
               onChange={handleInputChange}
               className="edit-input"
             />
           ) : (
-            <p>{employeeData.bankCode || '-'}</p>
+            <p>{employeeData.BankCode || '-'}</p>
           )}
         </div>
         <div className="info-item">
@@ -511,20 +780,20 @@ const ProfileDetail = () => {
           {isEditing ? (
             <input
               type="text"
-              name="bankStatus"
-              value={editData.bankStatus || ''}
+              name="BankStatus"
+              value={editData.BankStatus || ''}
               onChange={handleInputChange}
               className="edit-input"
             />
           ) : (
-            <p>{employeeData.bankStatus || '-'}</p>
+            <p>{employeeData.BankStatus || '-'}</p>
           )}
         </div>
       </div>
       <div className="info-row">
         <div className="info-item">
           <label>Last Updated</label>
-          <p>{employeeData.lastUpdated || '-'}</p>
+          <p>{employeeData.BankLastUpdated || '-'}</p>
         </div>
       </div>
     </div>
@@ -538,13 +807,13 @@ const ProfileDetail = () => {
           {isEditing ? (
             <input
               type="email"
-              name="email"
-              value={editData.email || ''}
+              name="Email"
+              value={editData.Email || ''}
               onChange={handleInputChange}
               className="edit-input"
             />
           ) : (
-            <p>{employeeData.email || '-'}</p>
+            <p>{employeeData.Email || '-'}</p>
           )}
         </div>
         <div className="info-item">
@@ -552,13 +821,13 @@ const ProfileDetail = () => {
           {isEditing ? (
             <input
               type="text"
-              name="slackId"
-              value={editData.slackId || ''}
+              name="SlackID"
+              value={editData.SlackID || ''}
               onChange={handleInputChange}
               className="edit-input"
             />
           ) : (
-            <p>{employeeData.slackId || '-'}</p>
+            <p>{employeeData.SlackID || '-'}</p>
           )}
         </div>
       </div>
@@ -568,13 +837,13 @@ const ProfileDetail = () => {
           {isEditing ? (
             <input
               type="text"
-              name="skypeId"
-              value={editData.skypeId || ''}
+              name="SkypeID"
+              value={editData.SkypeID || ''}
               onChange={handleInputChange}
               className="edit-input"
             />
           ) : (
-            <p>{employeeData.skypeId || '-'}</p>
+            <p>{employeeData.SkypeID || '-'}</p>
           )}
         </div>
         <div className="info-item">
@@ -582,13 +851,13 @@ const ProfileDetail = () => {
           {isEditing ? (
             <input
               type="text"
-              name="githubId"
-              value={editData.githubId || ''}
+              name="GithubID"
+              value={editData.GithubID || ''}
               onChange={handleInputChange}
               className="edit-input"
             />
           ) : (
-            <p>{employeeData.githubId || '-'}</p>
+            <p>{employeeData.GithubID || '-'}</p>
           )}
         </div>
       </div>
@@ -609,22 +878,38 @@ const ProfileDetail = () => {
           </tr>
         </thead>
         <tbody>
-          {attendanceData.map((row, idx) => (
-            <tr key={idx}>
-              <td>{row.date}</td>
-              <td>{row.check_in}</td>
-              <td>{row.check_out}</td>
-              <td>{row.break}</td>
-              <td>{row.working_hours}</td>
-              <td>
-                <span className={`status-badge ${row.status === 'Present' && (row.working_hours >= '09:00 Hrs') ? 'on-time' : 'late'}`}>
-                  {row.status === 'Present'
-                    ? (row.working_hours >= '09:00 Hrs' ? 'On Time' : 'Late')
-                    : 'Late'}
-                </span>
+          {attendanceData.length > 0 ? (
+            attendanceData.map((row, idx) => (
+              <tr key={idx}>
+                <td>{new Date(row.Date).toLocaleDateString('en-US', { 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric'
+                })}</td>
+                <td>{row.CheckInTime}</td>
+                <td>{row.CheckOutTime}</td>
+                <td>{row.Break || '00:00'} Hrs</td>
+                <td>{row.WorkingHours || '00:00'} Hrs</td>
+                <td>
+                  <span
+                    className={`status-badge ${
+                      row.Status && row.Status.toLowerCase() === 'ontime'
+                        ? 'on-time'
+                        : 'late'
+                    }`}
+                  >
+                    {row.Status && row.Status.toLowerCase() === 'ontime' ? 'On Time' : row.Status}
+                  </span>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="6" style={{ textAlign: 'center', padding: '1rem', color: '#666' }}>
+                No attendance records found
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>
@@ -646,18 +931,18 @@ const ProfileDetail = () => {
           {projectData.length > 0 ? projectData.map((row, idx) => (
             <tr key={idx}>
               <td>{idx + 1}</td>
-              <td>{row.projectname}</td>
-              <td>{row.startdate ? new Date(row.startdate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }) : '-'}</td>
-              <td>{row.finishdate ? new Date(row.finishdate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }) : '-'}</td>
+              <td>{row.ProjectName}</td>
+              <td>{row.StartDate ? new Date(row.StartDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }) : '-'}</td>
+              <td>{row.EndDate ? new Date(row.EndDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }) : '-'}</td>
               <td>
                 <span
-                  className={`status-badge ${row.status === 'Completed' ? 'on-time' : 'late'}`}
-                  style={row.status === 'Completed'
+                  className={`status-badge ${row.Status === 'Completed' ? 'on-time' : 'late'}`}
+                  style={row.Status === 'Completed'
                     ? { background: '#d1fae5', color: '#10b981' }
                     : { background: '#fff7e6', color: '#eab308' }
                   }
                 >
-                  {row.status}
+                  {row.Status}
                 </span>
               </td>
             </tr>
@@ -671,68 +956,80 @@ const ProfileDetail = () => {
     </div>
   );
 
-  const renderLeaveTable = () => (
-    <div className="attendance-table-container">
-      <table className="attendance-table">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Duration</th>
-            <th>Days</th>
-            <th>Reporting Manager</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {leaveData.length > 0 ? leaveData.map((row, idx) => (
-            <tr key={idx}>
-              <td>
-                {row.startDate
-                  ? new Date(row.startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' })
-                  : '-'}
-              </td>
-              <td>
-                {row.startDate && row.endDate
-                  ? `${new Date(row.startDate).toLocaleString('en-US', { month: 'short', day: '2-digit' })} - ${new Date(row.endDate).toLocaleString('en-US', { month: 'short', day: '2-digit' })}`
-                  : '-'}
-              </td>
-              <td>{row.days ? `${row.days} Days` : '-'}</td>
-              <td>Mark Willians</td>
-              <td>
-                <span
-                  className={`status-badge ${
-                    row.status === 'Approved'
-                      ? 'on-time'
-                      : row.status === 'Pending'
-                      ? 'late'
-                      : 'rejected'
-                  }`}
-                  style={
-                    row.status === 'Approved'
-                      ? { background: '#d1fae5', color: '#10b981' }
-                      : row.status === 'Pending'
-                      ? { background: '#fff7e6', color: '#eab308' }
-                      : { background: '#fee2e2', color: '#ef4444' }
-                  }
-                >
-                  {row.status}
-                </span>
-              </td>
-            </tr>
-          )) : (
+  const renderLeaveTable = () => {
+    const calculateDays = (startDate, endDate) => {
+      if (!startDate || !endDate) return 0;
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const diffTime = Math.abs(end - start);
+      return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 เพื่อรวมวันเริ่มต้น
+    };
+
+    return (
+      <div className="attendance-table-container">
+        <table className="attendance-table">
+          <thead>
             <tr>
-              <td colSpan={5} style={{ textAlign: 'center', color: '#aaa' }}>No leave data</td>
+              <th>Date</th>
+              <th>Duration</th>
+              <th>Days</th>
+              <th>Reason</th>
+              <th>Status</th>
             </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
-  );
+          </thead>
+          <tbody>
+            {leaveData.length > 0 ? leaveData.map((row, idx) => (
+              <tr key={idx}>
+                <td>{new Date(row.StartDate).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: '2-digit'
+                })}</td>
+                <td>{`${new Date(row.StartDate).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: '2-digit'
+                })} - ${new Date(row.EndDate).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: '2-digit'
+                })}`}</td>
+                <td>{calculateDays(row.StartDate, row.EndDate)} Days</td>
+                <td>{row.Reason || '-'}</td>
+                <td>
+                  <span
+                    className={`status-badge ${
+                      row.Status === 'Approved'
+                        ? 'on-time'
+                        : row.Status === 'Pending'
+                        ? 'late'
+                        : 'rejected'
+                    }`}
+                    style={
+                      row.Status === 'Approved'
+                        ? { background: '#d1fae5', color: '#10b981' }
+                        : row.Status === 'Pending'
+                        ? { background: '#fff7e6', color: '#eab308' }
+                        : { background: '#fee2e2', color: '#ef4444' }
+                    }
+                  >
+                    {row.Status}
+                  </span>
+                </td>
+              </tr>
+            )) : (
+              <tr>
+                <td colSpan={5} style={{ textAlign: 'center', color: '#aaa' }}>No leave data</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
 
   const renderActiveSubTabContent = () => {
     switch (activeSubTab) {
       case 'personal':
-        return renderPersonalInfo();
+        return renderPersonalInformation();
       case 'professional':
         return renderProfessionalInfo();
       case 'documents':
@@ -802,26 +1099,31 @@ const ProfileDetail = () => {
     <div className="dashboard-container">
       <SideMenu isMinimized={isMinimized} onToggleMinimize={() => setIsMinimized(!isMinimized)} />
       <div className={`dashboard-main ${isMinimized ? 'expanded' : ''}`}>
-        <Topbar pageTitle="Employee Profile" pageSubtitle="" />
+        <Topbar 
+          pageTitle={`All Employees > ${employeeData.FName || ''} ${employeeData.LName || ''}`} 
+          pageSubtitle="" 
+        />
         <div className="profile-header-section">
           <div className="profile-header-info">
             <img 
-              src={employeeData.imageUrl || '/path/to/default-avatar.png'} 
+              src={employeeData.ImageUrl || '/src/assets/profile.png'} 
               alt="Profile" 
               className="profile-image"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = '/src/assets/profile.png';
+              }}
             />
             <div>
-              <h2 className="profile-name">{employeeData.name || 'Brooklyn Simmons'}</h2>
-              <div className="profile-meta">
-                <span className="profile-role">
-                  <svg width="18" height="18" style={{verticalAlign: 'middle', marginRight: 4}} fill="none" stroke="#22223b" strokeWidth="2" viewBox="0 0 24 24"><path d="M3 21v-2a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                  {employeeData.position || 'Project Manager'}
-                </span>
-                <span className="profile-email">
-                  <svg width="18" height="18" style={{verticalAlign: 'middle', marginRight: 4}} fill="none" stroke="#22223b" strokeWidth="2" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 6-10 7L2 6"/></svg>
-                  {employeeData.email || 'brooklyn.s@example.com'}
-                </span>
-              </div>
+              <h2 className="profile-name">{`${employeeData.FName} ${employeeData.LName}` || '-'}</h2>
+              <span className="profile-role">
+                <svg width="18" height="18" style={{verticalAlign: 'middle', marginRight: 4}} fill="none" stroke="#22223b" strokeWidth="2" viewBox="0 0 24 24"><path d="M3 21v-2a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                {employeeData.Position || '-'}
+              </span>
+              <span className="profile-email">
+                <svg width="18" height="18" style={{verticalAlign: 'middle', marginRight: 4}} fill="none" stroke="#22223b" strokeWidth="2" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 6-10 7L2 6"/></svg>
+                {employeeData.Email || '-'}
+              </span>
             </div>
           </div>
           {isEditing ? (
@@ -863,6 +1165,22 @@ const ProfileDetail = () => {
       </div>
     </div>
   );
+};
+
+const calculateWorkingHours = (checkIn, checkOut) => {
+  if (!checkIn || !checkOut) return '00:00';
+  
+  const [checkInHour, checkInMin] = checkIn.split(':');
+  const [checkOutHour, checkOutMin] = checkOut.split(':');
+  
+  const checkInDate = new Date(2000, 0, 1, parseInt(checkInHour), parseInt(checkInMin));
+  const checkOutDate = new Date(2000, 0, 1, parseInt(checkOutHour), parseInt(checkOutMin));
+  
+  const diff = checkOutDate - checkInDate;
+  const hours = Math.floor(diff / 1000 / 60 / 60);
+  const minutes = Math.floor((diff / 1000 / 60) % 60);
+  
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')} Hrs`;
 };
 
 export default ProfileDetail;

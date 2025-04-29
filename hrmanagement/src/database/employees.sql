@@ -1,364 +1,99 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Apr 29, 2025 at 05:43 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.1.25
 
-{
-  "name": "Darlene Robertson",
-  "nickname": "Darlene",
-  "age": 29,
-  "email": "darlene.r@company.com", 
-  "employeeId": "345321231",
-  "department": "Design",
-  "position": "UI/UX Designer",
-  "type": "Office",
-  "status": "Permanent",
-  "startDate": "2023-01-15",
-  "imageUrl": "https://randomuser.me/api/portraits/women/1.jpg"
-}
-{
-  "name": "Floyd Miles",
-  "nickname": "Floyd",
-  "age": 32,
-  "email": "floyd.m@company.com",
-  "employeeId": "987890545",
-  "department": "Development", 
-  "position": "PHP Developer",
-  "type": "Office",
-  "status": "Permanent",
-  "startDate": "2023-02-01",
-  "imageUrl": "https://randomuser.me/api/portraits/men/2.jpg"
-}
-{
-  "name": "Cody Fisher",
-  "nickname": "Cody",
-  "age": 28,
-  "email": "cody.f@company.com",
-  "employeeId": "453367122",
-  "department": "Sales",
-  "position": "Sales Manager",
-  "type": "Office",
-  "status": "Permanent",
-  "startDate": "2023-03-01",
-  "imageUrl": "https://randomuser.me/api/portraits/men/3.jpg"
-}
-{
-  "name": "Dianne Russell",
-  "nickname": "Dianne",
-  "email": "dianne.r@company.com",
-  "employeeId": "345321231",
-  "department": "Sales",
-  "position": "BDM",
-  "type": "WorkFromHome",
-  "status": "Permanent",
-  "startDate": "2023-04-01",
-  "imageUrl": "https://randomuser.me/api/portraits/women/4.jpg"
-}
-{
-  "name": "Savannah Nguyen",
-  "nickname": "Savannah",
-  "email": "savannah.n@company.com",
-  "employeeId": "453677881",
-  "department": "Design",
-  "position": "Design Lead",
-  "type": "Office",
-  "status": "Permanent",
-  "startDate": "2023-05-01",
-  "imageUrl": "https://randomuser.me/api/portraits/women/5.jpg"
-}
-{
-  "name": "Jacob Jones",
-  "nickname": "Jacob",
-  "email": "jacob.j@company.com",
-  "employeeId": "009918765",
-  "department": "Development",
-  "position": "Python Developer",
-  "type": "WorkFromHome",
-  "status": "Permanent",
-  "startDate": "2023-06-01",
-  "imageUrl": "https://randomuser.me/api/portraits/men/6.jpg"
-}
-{
-  "name": "Marvin McKinney",
-  "nickname": "Marvin",
-  "email": "marvin.m@company.com",
-  "employeeId": "239870122",
-  "department": "Development",
-  "position": "Sr. UI Developer",
-  "type": "WorkFromHome",
-  "status": "Permanent",
-  "startDate": "2023-07-01",
-  "imageUrl": "https://randomuser.me/api/portraits/men/7.jpg"
-}
-{
-  "name": "Brooklyn Simmons",
-  "nickname": "Brooklyn",
-  "email": "brooklyn.s@company.com",
-  "employeeId": "124335111",
-  "department": "PM",
-  "position": "Project Manager",
-  "type": "Office",
-  "status": "Permanent",
-  "startDate": "2023-08-01",
-  "imageUrl": "https://randomuser.me/api/portraits/women/8.jpg"
-}
-{
-  "name": "Kristin Watson",
-  "nickname": "Kristin",
-  "email": "kristin.w@company.com",
-  "employeeId": "435540099",
-  "department": "HR",
-  "position": "HR Executive",
-  "type": "Office",
-  "status": "Permanent",
-  "startDate": "2023-09-01",
-  "imageUrl": "https://randomuser.me/api/portraits/women/9.jpg"
-}
-{
-  "name": "Kathryn Murphy",
-  "nickname": "Kathryn",
-  "email": "kathryn.m@company.com",
-  "employeeId": "009812890",
-  "department": "Development",
-  "position": "React JS Developer",
-  "type": "Office",
-  "status": "Permanent",
-  "startDate": "2023-10-01",
-  "imageUrl": "https://randomuser.me/api/portraits/women/10.jpg"
-}
-{
-  "name": "Arlene McCoy",
-  "nickname": "Arlene",
-  "email": "arlene.m@company.com",
-  "employeeId": "671190345",
-  "department": "Development",
-  "position": "Node JS",
-  "type": "Office",
-  "status": "Permanent",
-  "startDate": "2023-11-01",
-  "imageUrl": "https://randomuser.me/api/portraits/women/11.jpg"
-}
-{
-  "name": "Devon Lane",
-  "nickname": "Devon",
-  "email": "devon.l@company.com",
-  "employeeId": "091235412",
-  "department": "BA",
-  "position": "Business Analyst",
-  "type": "WorkFromHome",
-  "status": "Permanent",
-  "startDate": "2023-12-01",
-  "imageUrl": "https://randomuser.me/api/portraits/men/12.jpg"
-}
-{
-  "name": "Cameron Wilson",
-  "nickname": "Cameron",
-  "email": "cameron.w@company.com",
-  "employeeId": "567123890",
-  "department": "QA",
-  "position": "Test Lead",
-  "type": "Office",
-  "status": "Contract",
-  "startDate": "2023-01-01",
-  "imageUrl": "https://randomuser.me/api/portraits/men/13.jpg"
-}
-{
-  "name": "Leslie Alexander",
-  "nickname": "Leslie",
-  "email": "leslie.a@company.com",
-  "employeeId": "334509876",
-  "department": "Marketing",
-  "position": "Digital Marketing",
-  "type": "WorkFromHome",
-  "status": "Permanent",
-  "startDate": "2023-02-01",
-  "imageUrl": "https://randomuser.me/api/portraits/women/14.jpg"
-}
-{
-  "name": "Jenny Wilson",
-  "nickname": "Jenny",
-  "email": "jenny.w@company.com",
-  "employeeId": "445678123",
-  "department": "Design",
-  "position": "Graphic Designer",
-  "type": "Office",
-  "status": "Intern",
-  "startDate": "2023-03-01",
-  "imageUrl": "https://randomuser.me/api/portraits/women/15.jpg"
-}
-{
-  "name": "Guy Hawkins",
-  "nickname": "Guy",
-  "email": "guy.h@company.com",
-  "employeeId": "112334567",
-  "department": "Development",
-  "position": "DevOps Engineer",
-  "type": "WorkFromHome",
-  "status": "Permanent",
-  "startDate": "2023-04-01",
-  "imageUrl": "https://randomuser.me/api/portraits/men/16.jpg"
-}
-{
-  "name": "Robert Fox",
-  "nickname": "Robert",
-  "email": "robert.f@company.com",
-  "employeeId": "678912345",
-  "department": "Sales",
-  "position": "Sales Executive",
-  "type": "Office",
-  "status": "Probation",
-  "startDate": "2023-05-01",
-  "imageUrl": "https://randomuser.me/api/portraits/men/17.jpg"
-}
-{
-  "name": "Wade Warren",
-  "nickname": "Wade",
-  "email": "wade.w@company.com",
-  "employeeId": "234567891",
-  "department": "Development",
-  "position": "Full Stack Developer",
-  "type": "WorkFromHome",
-  "status": "Permanent",
-  "startDate": "2023-06-01",
-  "imageUrl": "https://randomuser.me/api/portraits/men/18.jpg"
-}
-{
-  "name": "Bessie Cooper",
-  "nickname": "Bessie",
-  "email": "bessie.c@company.com",
-  "employeeId": "445566778",
-  "department": "PM",
-  "position": "Scrum Master",
-  "type": "Office",
-  "status": "Permanent",
-  "startDate": "2023-07-01",
-  "imageUrl": "https://randomuser.me/api/portraits/women/19.jpg"
-}
-{
-  "name": "Eleanor Pena",
-  "nickname": "Eleanor",
-  "email": "eleanor.p@company.com",
-  "employeeId": "998877665",
-  "department": "QA",
-  "position": "QA Engineer",
-  "type": "Office",
-  "status": "Contract",
-  "startDate": "2023-08-01",
-  "imageUrl": "https://randomuser.me/api/portraits/women/20.jpg"
-}
-{
-  "name": "Theresa Webb",
-  "nickname": "Theresa",
-  "email": "theresa.w@company.com",
-  "employeeId": "112233445",
-  "department": "Development",
-  "position": "iOS Developer",
-  "type": "Office",
-  "status": "Permanent",
-  "startDate": "2023-09-01",
-  "imageUrl": "https://randomuser.me/api/portraits/women/21.jpg"
-}
-{
-  "name": "Annette Black",
-  "nickname": "Annette",
-  "email": "annette.b@company.com",
-  "employeeId": "554433221",
-  "department": "Development",
-  "position": "Android Developer",
-  "type": "WorkFromHome",
-  "status": "Permanent",
-  "startDate": "2023-10-01",
-  "imageUrl": "https://randomuser.me/api/portraits/women/22.jpg"
-}
-{
-  "name": "Jerome Bell",
-  "nickname": "Jerome",
-  "email": "jerome.b@company.com",
-  "employeeId": "667788990",
-  "department": "Design",
-  "position": "Motion Designer",
-  "type": "Office",
-  "status": "Contract",
-  "startDate": "2023-11-01",
-  "imageUrl": "https://randomuser.me/api/portraits/men/23.jpg"
-}
-{
-  "name": "Courtney Henry",
-  "nickname": "Courtney",
-  "email": "courtney.h@company.com",
-  "employeeId": "123456789",
-  "department": "Marketing",
-  "position": "Content Writer",
-  "type": "WorkFromHome",
-  "status": "Permanent",
-  "startDate": "2023-12-01",
-  "imageUrl": "https://randomuser.me/api/portraits/women/24.jpg"
-}
-{
-  "name": "Ralph Edwards",
-  "nickname": "Ralph",
-  "email": "ralph.e@company.com",
-  "employeeId": "987654321",
-  "department": "HR",
-  "position": "HR Manager",
-  "type": "Office",
-  "status": "Permanent",
-  "startDate": "2023-01-01",
-  "imageUrl": "https://randomuser.me/api/portraits/men/25.jpg"
-}
-{
-  "name": "Jane Cooper",
-  "nickname": "Jane",
-  "email": "jane.c@company.com",
-  "employeeId": "456789123",
-  "department": "Design",
-  "position": "Product Designer",
-  "type": "WorkFromHome",
-  "status": "Permanent",
-  "startDate": "2023-02-01",
-  "imageUrl": "https://randomuser.me/api/portraits/women/26.jpg"
-}
-{
-  "name": "Ronald Richards",
-  "nickname": "Ronald",
-  "email": "ronald.r@company.com",
-  "employeeId": "789123456",
-  "department": "Development",
-  "position": "System Architect",
-  "type": "Office",
-  "status": "Permanent",
-  "startDate": "2023-03-01",
-  "imageUrl": "https://randomuser.me/api/portraits/men/27.jpg"
-}
-{
-  "name": "Darrell Steward",
-  "nickname": "Darrell",
-  "email": "darrell.s@company.com",
-  "employeeId": "321654987",
-  "department": "BA",
-  "position": "Senior BA",
-  "type": "Office",
-  "status": "Permanent",
-  "startDate": "2023-04-01",
-  "imageUrl": "https://randomuser.me/api/portraits/men/28.jpg"
-}
-{
-  "name": "Albert Flores",
-  "nickname": "Albert",
-  "email": "albert.f@company.com",
-  "employeeId": "147258369",
-  "department": "Development",
-  "position": "Cloud Engineer",
-  "type": "WorkFromHome",
-  "status": "Permanent",
-  "startDate": "2023-05-01",
-  "imageUrl": "https://randomuser.me/api/portraits/men/29.jpg"
-}
-{
-  "name": "Esther Howard",
-  "nickname": "Esther",
-  "email": "esther.h@company.com",
-  "employeeId": "963852741",
-  "department": "PM",
-  "position": "Technical PM",
-  "type": "Office",
-  "status": "Permanent",
-  "startDate": "2023-06-01",
-  "imageUrl": "https://randomuser.me/api/portraits/women/30.jpg"
-}
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `hrmanagement`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `employees`
+--
+
+CREATE TABLE `employees` (
+  `EmployeeId` varchar(20) NOT NULL,
+  `FName` varchar(100) DEFAULT NULL,
+  `LName` varchar(100) DEFAULT NULL,
+  `Nickname` varchar(100) DEFAULT NULL,
+  `Age` int(11) DEFAULT NULL,
+  `DateOfBirth` date DEFAULT NULL,
+  `MaritalStatus` enum('Single','Married','Divorced','Widowed') DEFAULT NULL,
+  `Gender` enum('Male','Female','Other') DEFAULT NULL,
+  `Nationality` varchar(50) DEFAULT NULL,
+  `Address` varchar(255) DEFAULT NULL,
+  `City` varchar(100) DEFAULT NULL,
+  `State` varchar(100) DEFAULT NULL,
+  `ZIPCode` varchar(10) DEFAULT NULL,
+  `Email` varchar(100) NOT NULL,
+  `MobileNumber` varchar(20) DEFAULT NULL,
+  `Department` varchar(100) DEFAULT NULL,
+  `Position` varchar(100) DEFAULT NULL,
+  `Type` varchar(50) DEFAULT NULL,
+  `Status` varchar(50) DEFAULT NULL,
+  `StartDate` date DEFAULT NULL,
+  `ImageUrl` varchar(255) DEFAULT NULL,
+  `BankName` varchar(100) DEFAULT NULL,
+  `AccountHolderName` varchar(100) DEFAULT NULL,
+  `AccountNumber` varchar(20) DEFAULT NULL,
+  `AccountType` varchar(20) DEFAULT NULL,
+  `BankCode` varchar(20) DEFAULT NULL,
+  `BankStatus` varchar(20) DEFAULT NULL,
+  `BankLastUpdated` datetime DEFAULT NULL,
+  `Salary` decimal(10,2) DEFAULT NULL,
+  `SlackID` varchar(100) DEFAULT NULL,
+  `SkypeID` varchar(100) DEFAULT NULL,
+  `GithubID` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `employees`
+--
+
+INSERT INTO `employees` (`EmployeeId`, `FName`, `LName`, `Nickname`, `Age`, `DateOfBirth`, `MaritalStatus`, `Gender`, `Nationality`, `Address`, `City`, `State`, `ZIPCode`, `Email`, `MobileNumber`, `Department`, `Position`, `Type`, `Status`, `StartDate`, `ImageUrl`, `BankName`, `AccountHolderName`, `AccountNumber`, `AccountType`, `BankCode`, `BankStatus`, `BankLastUpdated`, `Salary`, `SlackID`, `SkypeID`, `GithubID`) VALUES
+('009918765', 'Jacob ', 'Jones', 'Jacob', 21, '2009-06-19', 'Single', 'Female', 'Thai', '69/1 Nakhon Si Thammarat Rd.', 'Nakhon Si Thammarat', 'Nakhon Si Thammarat', '80000', 'jacob.j@company.com', '0891000001', 'Development', 'PHP Developer', 'Office', 'Contract', '2023-03-01', 'https://randomuser.me/api/portraits/women/1.jpg', 'Kasikorn Bank', 'Jane Smith', '2345678901', 'Saving', 'KBANK01', 'Active', '2025-04-28 11:41:49', 35000.00, 'john.doe', 'john.doe.skype', 'johndoe123'),
+('100010001', 'Ethan ', 'Ward', 'Ethan', 25, '2013-08-03', 'Single', 'Female', 'Thai', '27/1 Rayong Rd.', 'Rayong', 'Rayong', '21000', 'ethan.w@company.com', '0891000002', 'Development', 'PHP Developer', 'Hybrid', 'Permanent', '2023-03-01', 'https://randomuser.me/api/portraits/men/1.jpg', 'Bangkok Bank', 'John Doe', '1234567890', 'Saving', 'BBL001', 'Active', '2025-04-28 11:41:49', 40000.00, 'jane.smith', 'jane.smith.skype', 'janesmith456'),
+('100010002', 'Mia', 'Lewis', 'Mia', 26, '2005-02-05', 'Divorced', 'Male', 'Thai', '25/1 Surat Thani Rd.', 'Surat Thani', 'Surat Thani', '84000', 'mia.l@company.com', '0891000003', 'Development', 'React Developer', 'Office', 'Intern', '2023-04-01', 'https://randomuser.me/api/portraits/women/2.jpg', 'SCB Bank', 'Mike Johnson', '3456789012', 'Current', 'SCB001', 'Active', '2025-04-28 11:41:49', 42000.00, 'mike.johnson', 'mike.johnson.skype', 'mikejohnson789'),
+('100010003', 'Logan ', 'Carter', 'Logan', 29, '2005-08-06', 'Married', 'Female', 'Thai', '81/1 Lampang Rd.', 'Lampang', 'Lampang', '52000', 'logan.c@company.com', '0891000004', 'Development', 'Vue Developer', 'Office', 'Permanent', '2023-02-15', 'https://randomuser.me/api/portraits/men/3.jpg', 'Krungsri Bank', 'Anna Brown', '4567890123', 'Saving', 'BAY001', 'Active', '2025-04-28 11:41:49', 38000.00, 'anna.brown', 'anna.brown.skype', 'annabrown321'),
+('100010005', 'Liam', 'Bennett', 'Liam', 27, '1999-12-11', 'Divorced', 'Male', 'Thai', '71/1 Phetchabun Rd.', 'Phetchabun', 'Phetchabun', '67000', 'liam.b@company.com', '0891000006', 'Sales', 'Sales Executive', 'WorkFromHome', 'Permanent', '2023-03-20', 'https://randomuser.me/api/portraits/men/5.jpg', 'Kasikorn Bank', 'Sophia White', '6789012345', 'Saving', 'KBANK01', 'Active', '2025-04-28 11:41:49', 47000.00, 'sophia.white', 'sophia.white.skype', 'sophiawhite987'),
+('100010006', 'Sophia', ' Collins', 'Soph', 24, '2002-11-06', 'Married', 'Female', 'Thai', '97/1 Sakon Nakhon Rd.', 'Sakon Nakhon', 'Sakon Nakhon', '47000', 'sophia.c@company.com', '0891000007', 'Sales', 'BDM', 'Hybrid', 'Intern', '2023-02-28', 'https://randomuser.me/api/portraits/women/6.jpg', 'SCB Bank', 'David Black', '7890123456', 'Saving', 'SCB001', 'Active', '2025-04-28 11:41:49', 32000.00, 'david.black', 'david.black.skype', 'davidblack147'),
+('100010007', 'Oliver', 'Hughes', 'Ollie', 31, '2004-11-24', 'Married', 'Male', 'Thai', '53/1 Mae Hong Son Rd.', 'Mae Hong Son', 'Mae Hong Son', '58000', 'oliver.h@company.com', '0891000008', 'Development', 'Node.js Developer', 'Office', 'Permanent', '2023-03-10', 'https://randomuser.me/api/portraits/men/7.jpg', 'Krungsri Bank', 'Emma Wilson', '8901234567', 'Current', 'BAY001', 'Active', '2025-04-28 11:41:49', 30000.00, 'emma.wilson', 'emma.wilson.skype', 'emmawilson258'),
+('100010008', 'Isabella', 'Turner', 'Bella', 28, '1998-09-23', 'Single', 'Male', 'Thai', '66/1 Nakhon Si Thammarat Rd.', 'Nakhon Si Thammarat', 'Nakhon Si Thammarat', '80000', 'isabella.t@company.com', '0891000009', 'Development', 'Frontend Dev', 'Office', 'Permanent', '2023-01-20', 'https://randomuser.me/api/portraits/women/8.jpg', 'Bangkok Bank', 'Oliver Moore', '9012345678', 'Saving', 'BBL001', 'Active', '2025-04-28 11:41:49', 43000.00, 'oliver.moore', 'oliver.moore.skype', 'olivermoore369'),
+('124335111', 'Brooklyn', 'Simmons', 'Brook', 27, '1998-01-26', 'Single', 'Male', 'Thai', '64/1 Rayong Rd.', 'Rayong', 'Rayong', '21000', 'brooklyn.s@company.com', '0891000010', 'Development', 'PHP Developer', 'Office', 'Contract', '2023-03-01', 'https://randomuser.me/api/portraits/women/1.jpg', 'Kasikorn Bank', 'Amelia Taylor', '1123456789', 'Saving', 'KBANK01', 'Active', '2025-04-28 11:41:49', 50000.00, 'amelia.taylor', 'amelia.taylor.skype', 'ameliataylor741'),
+('239870122', 'Marvin', 'McKinney', 'Marvin', 23, '2010-01-23', 'Divorced', 'Female', 'Thai', '96/1 Surat Thani Rd.', 'Surat Thani', 'Surat Thani', '84000', 'marvin.m@company.com', '0891000011', 'Development', 'PHP Developer', 'Office', 'Permanent', '2023-03-01', 'https://randomuser.me/api/portraits/women/1.jpg', 'SCB Bank', 'William Anderson', '2234567890', 'Current', 'SCB001', 'Active', '2025-04-28 11:41:49', 37000.00, 'william.anderson', 'william.anderson.skype', 'williamanderson852'),
+('345321231', 'Darlene', 'Robertson', 'Darlene', 29, '2004-12-04', 'Divorced', 'Male', 'Thai', '44/1 Lampang Rd.', 'Lampang', 'Lampang', '52000', 'darlene.r@company.com', '0891000012', 'Design', 'UI/UX Designer', 'Office', 'Permanent', '2023-01-15', 'https://randomuser.me/api/portraits/women/1.jpg', 'Krungsri Bank', 'Isabella Thomas', '3345678901', 'Saving', 'BAY001', 'Active', '2025-04-28 11:41:49', 52000.00, 'isabella.thomas', 'isabella.thomas.skype', 'isabellathomas963'),
+('345321232', 'Dianne', 'Russell', 'Dianne', 21, '2005-04-19', 'Married', 'Male', 'Thai', '55/1 Trang Rd.', 'Trang', 'Trang', '92000', 'dianne.r@company.com', '0891000013', 'Sales', 'BDM', 'WorkFromHome', 'Permanent', '2023-04-01', 'https://randomuser.me/api/portraits/women/4.jpg', 'Bangkok Bank', 'James Jackson', '4456789012', 'Saving', 'BBL001', 'Active', '2025-04-28 11:41:49', 48000.00, 'james.jackson', 'james.jackson.skype', 'jamesjackson159'),
+('453367122', 'Cody', 'Fisher', 'Cody', 28, '2008-09-11', 'Married', 'Female', 'Thai', '30/1 Phetchabun Rd.', 'Phetchabun', 'Phetchabun', '67000', 'cody.f@company.com', '0891000014', 'Sales', 'Sales Manager', 'Office', 'Intern', '2023-03-01', 'https://randomuser.me/api/portraits/men/3.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+('987890545', 'Floyd ', 'Miles', 'Floyd', 32, '2003-01-31', 'Single', 'Female', 'Thai', '98/1 Mae Hong Son Rd.', 'Mae Hong Son', 'Mae Hong Son', '58000', 'floyd.m@company.com', '0891000016', 'Development', 'PHP Developer', 'Office', 'Permanent', '2023-02-01', 'https://randomuser.me/api/portraits/men/2.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+('EMP2025044861', 'Admin', '', 'Admin', 99, '9999-12-20', 'Single', 'Male', 'Mars', '-', '-', '-', '-', 'admin@gmail.com', '0200001111', 'Admin', 'Admin', 'Office', 'Permanent', '1111-11-11', NULL, 'bangkok-bank', 'AdminAkJai', '1122334455', 'savings', '4444', 'active', '2025-04-28 15:49:48', 99999.00, 'adminadjai.j', 'admin.aa', 'admin.na');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `employees`
+--
+ALTER TABLE `employees`
+  ADD PRIMARY KEY (`EmployeeId`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

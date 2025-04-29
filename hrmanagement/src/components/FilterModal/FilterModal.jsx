@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import SideMenu from '../SideMenu/Side_menu'
 import './FilterModal.css'
 
-function FilterModal({ isOpen, onClose, onApply, sideMenuProps }) {
+function FilterModal({ isOpen, onClose, onApply }) {
   const [selectedDepartments, setSelectedDepartments] = useState([])
   const [selectedType, setSelectedType] = useState('')
 
@@ -42,7 +41,6 @@ function FilterModal({ isOpen, onClose, onApply, sideMenuProps }) {
 
   return (
     <div className="filter-modal-overlay">
-      <SideMenu {...sideMenuProps} hasPopup={true} />
       <div className="filter-modal">
         <h3>Filter</h3>
         

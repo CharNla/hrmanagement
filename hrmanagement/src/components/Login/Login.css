@@ -1,4 +1,3 @@
-
 /* Reset */
 * {
   margin: 0;
@@ -96,7 +95,7 @@ html, body {
 .input-field {
   width: 100%;
   padding: 14px 16px;
-  margin-bottom: 18px;
+  margin-bottom: 12px;
   border: 1.5px solid var(--input-border);
   border-radius: 10px;
   font-size: 14px;
@@ -121,7 +120,7 @@ html, body {
 .password-toggle {
   position: absolute;
   right: 14px;
-  top: 40%;
+  top: 58%;
   transform: translateY(-50%);
   background: none;
   border: none;
@@ -158,26 +157,90 @@ html, body {
 .remember-me {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
+  gap: 10px;
+  font-size: 14px;
   color: #333;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  transition: color 0.2s;
 }
 
-.forgot-password {
-  font-size: 13px;
-  color: var(--primary);
-  text-decoration: none;
+.remember-me input[type="checkbox"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--primary, #7152f3);
+  border-radius: 6px;
+  background: #fff;
+  transition: border-color 0.2s, background 0.2s;
+  margin-right: 0px;
+  position: relative;
+  cursor: pointer;
+  outline: none;
 }
 
-.forgot-password:hover {
-  text-decoration: underline;
+.remember-me input[type="checkbox"]:checked {
+  background: #7152f3;
+  border-color: #7152f3;
 }
 
-/* Error */
+.remember-me input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 2px;
+  width: 6px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2.5px 2.5px 0;
+  transform: rotate(45deg) scale(1);
+  transition: all 0.2s cubic-bezier(.4,2,.6,1);
+  opacity: 1;
+}
+
+.remember-me input[type="checkbox"]:not(:checked)::after {
+  opacity: 0;
+  transform: scale(0.7);
+}
+
+.remember-me span {
+  transition: color 0.2s;
+}
+
+/* Input group for better error positioning */
+.input-group {
+  position: relative;
+  margin-bottom: 18px;
+}
+
+/* Error styles */
+.input-field.error {
+  border-color: #dc3545;
+  background-color: #fff8f8;
+}
+
+.input-field.error:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
+}
+
+.error-text {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
 .error-message {
-  color: red;
-  margin-bottom: 12px;
+  color: #dc3545;
+  background-color: #fff8f8;
+  border: 1px solid #dc3545;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 16px;
   font-size: 13px;
+  text-align: center;
 }
 
 /* Login Button */
@@ -196,4 +259,95 @@ html, body {
 
 .login-button:hover {
   background-color: #6a5ae0;
+}
+
+.input-label {
+  display: block;
+  font-size: 13px;
+  color: #593ec8;
+  font-weight: 500;
+  margin-bottom: 6px;
+  margin-left: 2px;
+  letter-spacing: 0.01em;
+  transition: color 0.2s;
+}
+
+/* --- Uiverse style for input group with icon --- */
+.group {
+  display: flex;
+  line-height: 30px;
+  align-items: center;
+  position: relative;
+  max-width: 100%;
+  margin-bottom: 18px;
+}
+.input {
+  width: 100%;
+  height: 45px;
+  line-height: 30px;
+  padding: 0 1rem;
+  padding-left: 2.5rem;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  outline: none;
+  background-color: #f8fafc;
+  color: #0d0c22;
+  transition: .5s ease;
+  font-size: 14px;
+}
+.input::placeholder {
+  color: #94a3b8;
+}
+.input:focus, .input:hover {
+  outline: none;
+  border-color: rgba(129, 140, 248, 1);
+  background-color: #fff;
+  box-shadow: 0 0 0 5px rgb(129 140 248 / 30%);
+}
+.icon {
+  position: absolute;
+  left: 1rem;
+  fill: none;
+  width: 1.2rem;
+  height: 1.2rem;
+  color: #888;
+  pointer-events: none;
+}
+
+.login-left .circles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.login-left .circles li {
+  position: absolute;
+  display: block;
+  list-style: none;
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.12);
+  animation: animate 25s linear infinite;
+  bottom: -150px;
+  border-radius: 16px;
+}
+
+.login-left .circles li:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
+.login-left .circles li:nth-child(2) { left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; }
+.login-left .circles li:nth-child(3) { left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
+.login-left .circles li:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 18s; }
+.login-left .circles li:nth-child(5) { left: 65%; width: 20px; height: 20px; animation-delay: 0s; }
+.login-left .circles li:nth-child(6) { left: 75%; width: 110px; height: 110px; animation-delay: 3s; }
+.login-left .circles li:nth-child(7) { left: 35%; width: 150px; height: 150px; animation-delay: 7s; }
+.login-left .circles li:nth-child(8) { left: 50%; width: 25px; height: 25px; animation-delay: 15s; animation-duration: 45s; }
+.login-left .circles li:nth-child(9) { left: 20%; width: 15px; height: 15px; animation-delay: 2s; animation-duration: 35s; }
+.login-left .circles li:nth-child(10) { left: 85%; width: 150px; height: 150px; animation-delay: 0s; animation-duration: 11s; }
+
+@keyframes animate {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; border-radius: 16px; }
+  100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; border-radius: 16px; }
 }

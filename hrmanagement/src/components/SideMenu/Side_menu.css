@@ -9,6 +9,7 @@
   z-index: 100;
   transition: all 0.3s ease;
   padding: 0.8rem;
+  
 }
 
 /* ปรับปรุง styles สำหรับ sidemenu เมื่อมี popup */
@@ -92,8 +93,8 @@
 }
 
 .menu-item.active {
-  background-color: #F3F2FF;
-  color: #7152F3;
+  background-color: #7152F3;
+  color: #ffffff;
   font-weight: 600;
 }
 
@@ -180,86 +181,115 @@
   z-index: 1000;
 }
 
-.theme-toggle {
-  display: flex;
-  gap: 0.2rem;
-  padding: 0.3rem;
-  background-color: #F3F2FF;
-  border-radius: 0.3rem;
-  margin-top: auto; /* Push to bottom */
-  margin-bottom: 0.5rem;
+/* --- Custom Switch for Theme Toggle (from Uiverse.io, class renamed to avoid collision) --- */
+.theme-switch {
+  font-size: 17px;
+  position: relative;
+  display: inline-block;
+  width: 64px;
+  height: 34px;
+  display: none !important; /* ปรับแสดงปุ่มสลับธีม*/
 }
-
-.toggle-btn {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.2rem;
-  padding: 0.3rem;
-  border: none;
-  border-radius: 0.3rem;
-  background: none;
-  color: #666;
+.theme-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.theme-slider {
+  position: absolute;
   cursor: pointer;
-  transition: all 0.2s ease;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #73C0FC;
+  transition: .4s;
+  border-radius: 30px;
+}
+.theme-slider:before {
+  position: absolute;
+  content: "";
+  height: 30px;
+  width: 30px;
+  border-radius: 20px;
+  left: 2px;
+  bottom: 2px;
+  z-index: 2;
+  background-color: #e8e8e8;
+  transition: .4s;
+}
+.theme-sun svg {
+  position: absolute;
+  top: 6px;
+  left: 36px;
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+}
+.theme-moon svg {
+  fill: #73C0FC;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+}
+.theme-switch:hover .theme-sun svg {
+  animation: rotate 15s linear infinite;
+}
+@keyframes rotate {
+  0% { transform: rotate(0); }
+  100% { transform: rotate(360deg); }
+}
+.theme-switch:hover .theme-moon svg {
+  animation: tilt 5s linear infinite;
+}
+@keyframes tilt {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg); }
+  75% { transform: rotate(10deg); }
+  100% { transform: rotate(0deg); }
+}
+.theme-input:checked + .theme-slider {
+  background-color: #183153;
+}
+.theme-input:focus + .theme-slider {
+  box-shadow: 0 0 1px #183153;
+}
+.theme-input:checked + .theme-slider:before {
+  transform: translateX(30px);
 }
 
-.toggle-btn.active {
-  background-color: #7152F3;
-  color: white;
-}
-
-.toggle-btn:hover:not(.active) {
-  background-color: rgba(113, 82, 243, 0.1);
-  color: #7152F3;
-}
-
-.main-content {
-  margin-left: 240px; /* ปรับตาม side menu width */
-  padding: 2rem;
-  width: calc(100% - 240px);
-  box-sizing: border-box;
-  transition: all 0.3s ease;
-}
-
-.side-menu.minimized ~ .main-content {
-  margin-left: 70px; /* ปรับตาม minimized width */
-  width: calc(100% - 70px);
-}
-
-/* Dark Mode Styles */
+/* --- Improved Dark Mode Styles --- */
 .side-menu.dark {
   background-color: #2C2C3A;
+  box-shadow: 0 4px 24px 0 rgba(44,44,58,0.25);
 }
-
 .side-menu.dark .logo {
-  color: #fff;
+  color: #7152F3;
 }
-
+.side-menu.dark .logo-icon {
+  background-color: #7152F3;
+  color: #2C2C3A;
+}
 .side-menu.dark .menu-item {
-  color: #fff;
+  color: #E0E0E0;
+  background: none;
 }
-
 .side-menu.dark .menu-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background-color: #393958;
+  color: #7152F3;
+  transform: translateX(2px) scale(1.03);
 }
-
 .side-menu.dark .menu-item.active {
-  background-color: rgb(116, 85, 242);
-  color: #fff;
+  background-color: #7152F3;
+  color: #2C2C3A;
+  font-weight: 700;
 }
-
+.side-menu.dark .menu-item.active::before {
+  background-color: #7152F3;
+}
 .side-menu.dark .theme-toggle {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.side-menu.dark .toggle-btn {
-  color: #fff;
-}
-
-.side-menu.dark .toggle-btn:hover:not(.active) {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background: none; /* ลบสีพื้นหลังออก */
 }

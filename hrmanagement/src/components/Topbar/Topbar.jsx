@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { FiSearch, FiBell, FiChevronDown, FiUser, FiLogOut } from 'react-icons/fi'
 import './Topbar.css'
 import userImage from '../../assets/profile.png'
@@ -11,6 +11,13 @@ function Topbar({ pageTitle = "Dashboard", pageSubtitle = "" }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [showLogoutModal, setShowLogoutModal] = useState(false)
   const currentHour = new Date().getHours()
+  
+  const userInfo = {
+    name: 'Admin',
+    role: 'Administrator',
+    avatar: userImage,
+    employeeId: 'EMP2025044861'
+  }
   
   const getGreeting = () => {
     if (currentHour < 12) return 'Good Morning'
@@ -23,22 +30,21 @@ function Topbar({ pageTitle = "Dashboard", pageSubtitle = "" }) {
   }
 
   const confirmLogout = () => {
-    // Clear any auth tokens/session
     localStorage.removeItem('auth')
     navigate('/login')
   }
 
+  const handleProfileClick = () => {
+    setIsDropdownOpen(false)
+    navigate(`/employee/${userInfo.employeeId}`)
+  }
+
   return (
     <>
-      <motion.div 
-        className="topbar"
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
+      <div className="topbar">
         <div className="left-section">
           <h1 className="greeting">{pageTitle}</h1>
-          <p className="sub-greeting">{pageSubtitle || getGreeting()}</p>
+          <p className="sub-greeting">{pageSubtitle || getGreeting()}</p>  
         </div>
 
         <div className="right-section">
@@ -63,10 +69,10 @@ function Topbar({ pageTitle = "Dashboard", pageSubtitle = "" }) {
               className="profile-trigger"
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
-              <img src={userImage} alt="User" className="user-avatar" />
+              <img src={userInfo.avatar} alt="User" className="user-avatar" />
               <div className="user-info">
-                <h3 className="user-name">Robert Allen</h3>
-                <p className="user-role">HR Manager</p>
+                <h3 className="user-name">{userInfo.name}</h3>
+                <p className="user-role">{userInfo.role}</p>
               </div>
               <FiChevronDown className={`dropdown-icon ${isDropdownOpen ? 'open' : ''}`} />
             </button>
@@ -80,7 +86,7 @@ function Topbar({ pageTitle = "Dashboard", pageSubtitle = "" }) {
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <button onClick={() => navigate('/profile')}>
+                  <button onClick={handleProfileClick}>
                     <FiUser />
                     My Profile
                   </button>
@@ -93,9 +99,8 @@ function Topbar({ pageTitle = "Dashboard", pageSubtitle = "" }) {
             </AnimatePresence>
           </div>
         </div>
-      </motion.div>
+      </div>
 
-      {/* Logout Confirmation Modal */}
       {showLogoutModal && (
         <motion.div 
           className="modal-overlay"
