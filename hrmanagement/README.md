@@ -101,8 +101,3 @@ hrmanagement/
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 🙏 Acknowledgments
-
-- React Icons for the beautiful icon set
-- Framer Motion for smooth animations
-- The React community for inspiration and support
